@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LineTracker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzUJ70NapbV8mg7Y623k0471ZCdZT84Qs&callback=initAutocomplete&libraries=places&v=weekly"
+      defer
+    ></script>
+    <style type="text/css">
+        {box-sizing: border-box;}
+        #map {
+        align:left;
+        height: 70%;
+        width: 60%;
+        border: 2px solid black;
+        }
+        
+        #myform {
+            position: fixed;
+            align: left;
+            margin-bottom: 160px;
+            margin-right: 60px;
+            z-index: 9;
+            background-color: #f1f1f1;
+            border: 1px solid #d3d3d3;
+            text-align: center;
+        }
+
+        .btn {
+            background-color:yellow;
+            cursor:pointer;
+            margin-top:4px;
+            text-align:center;
+        }
+
+        html,
+        body {
+        height: 100%;
+        margin-top: 0px;
+        background-color: gray;
+        }
+
+        #legend {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 5px;
+        margin: 5px;
+        border: 2px solid #000;
+        }
+
+        #legend h3 {
+        margin-top: 0;
+        }
+
+        #legend img {
+        vertical-align: middle;
+        }
+
+
+        ul.top {
+        list-style-type:none;
+        margin:0;
+        padding:0;
+        overflow:hidden;
+        background-color: #333;
+        position:static;
+        top:0;
+        width:100%;
+        }
+
+        li.top {
+        float:left;
+        }
+
+        li.top.label {
+        font-size: 17px;
+        display: block;
+        color: white;
+        margin: auto;
+        text-align:center;
+        text-decoration: none;
+        }
+
+        li.top a {
+        font-size: 17px;
+        padding-top: 14px;
+        display: block;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 9px 15px;
+        text-decoration: none;
+        }
+
+        li.top a:hover:not(.active) {
+        background-color:#333;
+        color: #D2EE87;
+        }
+
+        .active {
+        background-color: white;
+        color:#D2EE87;
+        }
+
+        table, th, td {
+        font-size:10px;
+        text-align:bottom;
+        }
+
+        th,td {
+        padding:4px;
+        padding-bottom:6px;
+        padding-right:0;
+        }
+
+        table {
+        padding:4px;
+        }
+
+        th, td input[type=radio] {
+        position:static;
+        }
+
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 30px;
+        height: 10px;
+        }
+
+        .switch input {
+        opacity:0;
+        width:0;
+        height:0;
+        }
+
+        .slider {
+        position:absolute;
+        cursor:pointer;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        background-color: #ccc;
+        -webkit-transition:.4s;
+        transition: .4s;
+        }
+
+        .slider:before {
+        position:absolute;
+        content:"";
+        height:16px;
+        width:16px;
+        left:0px;
+        bottom:0px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        }
+
+        input:checked + .slider {
+        background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3
+        }
+
+        input:checked + .slider:before {
+        -webkit-transition: translateX(0px);
+        -ms-transform: translateX(0px);
+        transform: translateX(0px);
+        }
+
+        .slider.round {
+        border-radius:0px;
+        }
+
+        .slider.round:before {
+        border-radius:50%;
+        }
+
+        #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        }
+
+        #infowindow-content .title {
+        font-weight: bold;
+        }
+
+        #infowindow-content {
+        display: none;
+        }
+
+        #map #infowindow-content {
+        display: inline;
+        }
+
+        .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+        }
+
+        #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+        }
+
+        .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+        }
+
+        .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+        }
+
+        #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+        }
+
+        #pac-input:focus {
+        border-color: #4d90fe;
+        }
+
+        #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+        }
+
+        #target {
+        width: 345px;
+        }
+
+        .open-button {
+        background-color: gray;
+        color: white;
+        padding: 16px 10px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 200px;
+        right: 200px;
+        width: 250px;
+        }
+
+        .form-popup {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        right: 15px;
+        border: 3px solid black;
+        z-index: 9;
+        }
+
+        .form-container {
+        max-width: 300px;
+        padding: 10px;
+        background-color: white;
+        }
+
+        .form-container input[type=text], .form-container input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        }
+
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+        }
+
+        .form-container .btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom:10px;
+        opacity: 0.8;
+        }
+
+        .form-container .cancel {
+        background-color: red;
+        }
+
+        .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+        }
+
+
+    </style>
+    <script>
+      function initAutocomplete() {
+        window.map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 33.8688, lng: -111.2195 },
+          mapTypeControl: false,
+          streetViewControl: false,
+          zoomControl: true,
+          fullScreenControl: false,
+          enableCloseButton: false,
+          fullscreenControl: false,
+          zoom: 8,
+          mapTypeId: "roadmap",
+        });
+        
+        var origin = {lat: 33.8688, lng: -111.2195};
+        var clickHandler = new ClickEventHandler(map, origin);
+
+        //URL locations for marker pins/colors
+        const iconBase = "http://maps.google.com/mapfiles/ms/icons/";
+            const icons = {
+                no_wait: {
+                name: "< 5 minutes",
+                icon: iconBase + "green-dot.png",
+                },
+                med_wait: {
+                name: "5-30 minutes",
+                icon: iconBase + "yellow-dot.png",
+                },
+                long_wait: {
+                name: "> 30 minutes",
+                icon: iconBase + "red-dot.png",
+                },
+            };
+            const features = [ {
+                position: new google.maps.LatLng(33.5, -111.12),
+                type: "long_wait", }, {
+                position: new google.maps.LatLng(33.8681, -111.2195),
+                type: "long_wait", }, {
+                position: new google.maps.LatLng(33.7, -111.3),
+                type: "no_wait", }, {
+                position: new google.maps.LatLng(33.4, -112),
+                type: "no_wait", }, {
+                position: new google.maps.LatLng(33.7, -112.3),
+                type: "no_wait", }
+            ];
+            features.forEach((feature) => {
+                const marker = new google.maps.Marker({
+                position: feature.position,
+                icon: icons[feature.type].icon,
+                map: map,
+                title: "click to zoom",
+                });
+
+                var infowindow = new google.maps.InfoWindow();
+
+                (function(marker,infowindow) {
+                    google.maps.event.addListener(marker,'click', function() {
+                        infowindow.open(map, marker);
+                        infowindow.setContent("hi");
+                        map.setZoom(14);
+                        map.setCenter(marker.getPosition());
+                    });   
+                })(marker,infowindow);
+
+            //    map.addListener("center_changed", () => {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+            //    window.setTimeout(() => {
+            //        map.panTo(marker.getPosition());
+            //    }, 3000);
+             //   });
+            //    marker.addListener("click", () => {
+            //    map.setZoom(16);
+             //   map.setCenter(marker.getPosition());
+             //   });
+            });
+
+        
+            const legend = document.getElementById("legend");
+
+            for (const key in icons) {
+                const type = icons[key];
+                const name = type.name;
+                const icon = type.icon;
+                const div = document.createElement("div");
+                div.innerHTML = '<img src="' + icon + '"> ' + name;
+                legend.appendChild(div);
+            }
+            map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
+
+        const input = document.getElementById("pac-input");
+
+        const searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+        map.addListener("bounds_changed", () => {
+          searchBox.setBounds(map.getBounds());
+        });
+        let markers = [];
+ 
+        searchBox.addListener("places_changed", () => {
+          const places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+          
+          markers.forEach((marker) => {
+            marker.setMap(null);
+          });
+          markers = [];
+          
+          const bounds = new google.maps.LatLngBounds();
+          places.forEach((place) => {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+
+        
+            const icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25),
+            };
+
+            markers.push(
+              new google.maps.Marker({
+                map,
+                icon,
+                title: place.name,
+                position: place.geometry.location,
+              })
+            );
+
+            if (place.geometry.viewport) {
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+      }  //end init
+
+    var ClickEventHandler = function(map, origin) {
+        this.origin = origin;
+        this.map = map;
+        this.infowindow = new google.maps.InfoWindow;
+        this.placesService = new google.maps.places.PlacesService(map);
+
+        this.map.addListener('click', this.handleClick.bind(this));
+    };
+
+    ClickEventHandler.prototype.handleClick = function(event) {
+        console.log('You clicked on: ' + event.latLng);
+        if (event.placeId) {
+        console.log('You clicked on place:' + event.placeId);
+        event.stop();
+        this.getPlaceInformation(event.placeId);
+        }
+    };
+
+    ClickEventHandler.prototype.getPlaceInformation = function(placeId) {
+        var me = this;
+        this.placesService.getDetails({placeId: placeId}, function(place, status) {
+        if (status === 'OK') {
+            const coord = place.geometry.location;
+            me.infowindow.close();
+            me.infowindow.setPosition(place.geometry.location);
+            //const id_loc = place.place_id;
+            //const loc_name = place.name;
+
+            me.infowindow.setContent(
+            '<div id="myDiv"><img src="' + place.icon + '" height="16" width="16"> '
+            + '<strong>' + place.name + '</strong><br>' + place.formatted_address + '<br>' + '<button class="btn" onclick="addWaitTime(\'' + coord + '\')">Click to add current wait time</button>' + '</div>');
+
+            me.infowindow.open(me.map);
+            
+        }
+    }); };
+    
+    function addWaitTime(coord) {   //coord = coordinates for long/lat
+        console.log('Name:' + coord);
+        var pos = coord.indexOf(",");
+        var latitude = coord.substring(1, 9);
+        var longitude = coord.substring(pos + 2, pos + 10);
+        console.log('lat:' + latitude + ' long:' + longitude);
+        document.getElementById("myform").style.display = "block";
+
+       /* const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ placeId: placeId }, (results, status) => {
+        if (status === "OK") {
+        if (results[0]) {
+            map.setZoom(11);
+            map.setCenter(results[0].geometry.location);
+            const marker = new google.maps.Marker({
+            map,
+            position: results[0].geometry.location,
+            });
+            this.infowindow.setContent(results[0].formatted_address);
+            this.infowindow.open(map, marker);
+        } else {
+            window.alert("No results found");
+        }
+        } else {
+            window.alert("Geocoder failed due to: " + status);
+        }
+        }); */
+    };
+
+    function closeForm() {
+        document.getElementById("myform").style.display = "none";
+    }
+    
+    </script>
+  </head>
+  <body>
+  <ul class = "top">
+    <li class= "top"><a class="active" href="map.html">Home</a></li>
+    <li class= "top"><a href="contacts.html">Info/Support</a></li>
+</ul>
+    <input
+      id="pac-input"
+      class="controls"
+      type="text"
+      placeholder="Filter by City, Restaurants, Urgent Care Centers, etc."
+    />
+    <h2 style="text-align:left; color:white; padding-left:290px; margin-bottom:5px;">COVID-19-Related Line Wait Times</h2>
+    <h2 style="text-align:left; color:white; padding-left:310px; font-size:14px; margin-top:0px;">Click on a location marker to add the current wait time</h2>
+    <div id="map" style="margin-left:110px; margin-top: 40px"></div>
+    <div id="legend"><h3>Wait Times</h3></div>
+    
+    <div class="form-popup" id="myform" align="center" style="margin-top:0px; display:none">
+    <form name="waitForm" method="post" action="dataconnection.php" class="form-container">
+        <p>
+        <h3>Current Wait Time Information</h3>
+        <label for="wait">Wait Time(min)</label>
+        <input type="number" name="waittime" id="watitime" min="0" max="500">
+        </p>
+        <button type="submit" class="btn">Submit</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+    </div>
+    
+  </body>
+</html>
