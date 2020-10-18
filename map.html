@@ -55,7 +55,11 @@
                 position: new google.maps.LatLng(33.466103, -112.067155),
                 type: "no_wait", }, {
                 position: new google.maps.LatLng(33.3830465, -111.96421533),
-                type: "long_wait", }
+                type: "long_wait", }, {
+                position: new google.maps.LatLng(33.409018, -111.925170),
+                type: "long_wait", }, {
+                position: new google.maps.LatLng(33.29365110, -111.8989813),
+                type: "med_wait", }
             ];
             features.forEach((feature) => {
                 const marker = new google.maps.Marker({
@@ -70,15 +74,15 @@
                     map.setZoom(10);
                 });
                 (function(marker,infowindow) {
+                    var coord = feature.position;
                     google.maps.event.addListener(marker,'click', function() {
                         infowindow.open(map, marker);
-                        infowindow.setContent('<div><strong>' + '_ minute wait' + '</strong><br>' + 'Time last updated: xx:xx' + '<br>' + '</div>');                        
+                        infowindow.setContent('<div><strong>' + '_ minute wait' + '</strong><br>' + 'Time last updated: xx:xx' + '<br>' + '<button class="btn" onclick="addWaitTime(\'' + coord + '\')">Click to add current wait time</button>'+ '</div>');                        
                         map.setZoom(16);
                         map.setCenter(marker.getPosition());
                     });   
                 })(marker,infowindow);
             });
-
         
             const legend = document.getElementById("legend");
 
