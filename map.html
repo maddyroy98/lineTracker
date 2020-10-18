@@ -11,18 +11,18 @@
     <script>
       function initAutocomplete() {
         window.map = new google.maps.Map(document.getElementById("map"), {
-          center: { lat: 33.8688, lng: -111.2195 },
+          center: { lat: 33.42036, lng: -111.92994 },
           mapTypeControl: false,
           streetViewControl: false,
           zoomControl: true,
           fullScreenControl: false,
           enableCloseButton: false,
           fullscreenControl: false,
-          zoom: 8,
+          zoom: 10,
           mapTypeId: "roadmap",
         });
         
-        var origin = {lat: 33.8688, lng: -111.2195};
+        var origin = {lat: 33.42036, lng: -111.92994};
         var clickHandler = new ClickEventHandler(map, origin);
 
         //URL locations for marker pins/colors
@@ -42,16 +42,20 @@
                 },
             };
             const features = [ {
-                position: new google.maps.LatLng(33.5, -111.12),
+                position: new google.maps.LatLng(33.361816, -111.91225290),
                 type: "long_wait", }, {
-                position: new google.maps.LatLng(33.8681, -111.2195),
+                position: new google.maps.LatLng(33.423042, -111.7706322),
+                type: "med_wait", }, {
+                position: new google.maps.LatLng(33.379019, -111.97675466),
+                type: "no_wait", }, {
+                position: new google.maps.LatLng(33.623178, -111.901438),
                 type: "long_wait", }, {
-                position: new google.maps.LatLng(33.7, -111.3),
+                position: new google.maps.LatLng(33.5039561, -111.93016201),
+                type: "med_wait", }, {
+                position: new google.maps.LatLng(33.466103, -112.067155),
                 type: "no_wait", }, {
-                position: new google.maps.LatLng(33.4, -112),
-                type: "no_wait", }, {
-                position: new google.maps.LatLng(33.7, -112.3),
-                type: "no_wait", }
+                position: new google.maps.LatLng(33.3830465, -111.96421533),
+                type: "long_wait", }
             ];
             features.forEach((feature) => {
                 const marker = new google.maps.Marker({
@@ -62,27 +66,17 @@
                 });
 
                 var infowindow = new google.maps.InfoWindow();
-
+                google.maps.event.addListener(infowindow,'closeclick',function(){
+                    map.setZoom(10);
+                });
                 (function(marker,infowindow) {
                     google.maps.event.addListener(marker,'click', function() {
                         infowindow.open(map, marker);
                         infowindow.setContent('<div><strong>' + '_ minute wait' + '</strong><br>' + 'Time last updated: xx:xx' + '<br>' + '</div>');                        
-                        map.setZoom(14);
+                        map.setZoom(16);
                         map.setCenter(marker.getPosition());
                     });   
                 })(marker,infowindow);
-
-            //    map.addListener("center_changed", () => {
-                // 3 seconds after the center of the map has changed, pan back to the
-                // marker.
-            //    window.setTimeout(() => {
-            //        map.panTo(marker.getPosition());
-            //    }, 3000);
-             //   });
-            //    marker.addListener("click", () => {
-            //    map.setZoom(16);
-             //   map.setCenter(marker.getPosition());
-             //   });
             });
 
         
@@ -124,7 +118,7 @@
             if (!place.geometry) {
               console.log("Returned place contains no geometry");
               return;
-            }
+            } 
 
         
             const icon = {
@@ -134,15 +128,6 @@
               anchor: new google.maps.Point(17, 34),
               scaledSize: new google.maps.Size(25, 25),
             };
-
-            markers.push(
-              new google.maps.Marker({
-                map,
-                icon,
-                title: place.name,
-                position: place.geometry.location,
-              })
-            );
 
             if (place.geometry.viewport) {
               bounds.union(place.geometry.viewport);
@@ -181,7 +166,10 @@
             me.infowindow.setPosition(place.geometry.location);
             //const id_loc = place.place_id;
             //const loc_name = place.name;
-
+            
+            google.maps.event.addListener(me.infowindow,'closeclick',function(){
+                map.setZoom(10);
+            });
             me.infowindow.setContent(
             '<div id="myDiv"><img src="' + place.icon + '" height="16" width="16"> '
             + '<strong>' + place.name + '</strong><br>' + place.formatted_address + '<br>' + '<button class="btn" onclick="addWaitTime(\'' + coord + '\')">Click to add current wait time</button>' + '</div>');
