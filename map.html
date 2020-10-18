@@ -7,314 +7,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzUJ70NapbV8mg7Y623k0471ZCdZT84Qs&callback=initAutocomplete&libraries=places&v=weekly"
       defer
     ></script>
-    <style type="text/css">
-        {box-sizing: border-box;}
-        #map {
-        align:left;
-        height: 70%;
-        width: 60%;
-        border: 2px solid black;
-        }
-        
-        #myform {
-            position: fixed;
-            align: left;
-            margin-bottom: 160px;
-            margin-right: 60px;
-            z-index: 9;
-            background-color: #f1f1f1;
-            border: 1px solid #d3d3d3;
-            text-align: center;
-        }
-
-        .btn {
-            background-color:yellow;
-            cursor:pointer;
-            margin-top:4px;
-            text-align:center;
-        }
-
-        html,
-        body {
-        height: 100%;
-        margin-top: 0px;
-        background-color: gray;
-        }
-
-        #legend {
-        font-family: Arial, sans-serif;
-        background: #fff;
-        padding: 5px;
-        margin: 5px;
-        border: 2px solid #000;
-        }
-
-        #legend h3 {
-        margin-top: 0;
-        }
-
-        #legend img {
-        vertical-align: middle;
-        }
-
-
-        ul.top {
-        list-style-type:none;
-        margin:0;
-        padding:0;
-        overflow:hidden;
-        background-color: #333;
-        position:static;
-        top:0;
-        width:100%;
-        }
-
-        li.top {
-        float:left;
-        }
-
-        li.top.label {
-        font-size: 17px;
-        display: block;
-        color: white;
-        margin: auto;
-        text-align:center;
-        text-decoration: none;
-        }
-
-        li.top a {
-        font-size: 17px;
-        padding-top: 14px;
-        display: block;
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 9px 15px;
-        text-decoration: none;
-        }
-
-        li.top a:hover:not(.active) {
-        background-color:#333;
-        color: #D2EE87;
-        }
-
-        .active {
-        background-color: white;
-        color:#D2EE87;
-        }
-
-        table, th, td {
-        font-size:10px;
-        text-align:bottom;
-        }
-
-        th,td {
-        padding:4px;
-        padding-bottom:6px;
-        padding-right:0;
-        }
-
-        table {
-        padding:4px;
-        }
-
-        th, td input[type=radio] {
-        position:static;
-        }
-
-        .switch {
-        position: relative;
-        display: inline-block;
-        width: 30px;
-        height: 10px;
-        }
-
-        .switch input {
-        opacity:0;
-        width:0;
-        height:0;
-        }
-
-        .slider {
-        position:absolute;
-        cursor:pointer;
-        top:0;
-        left:0;
-        right:0;
-        bottom:0;
-        background-color: #ccc;
-        -webkit-transition:.4s;
-        transition: .4s;
-        }
-
-        .slider:before {
-        position:absolute;
-        content:"";
-        height:16px;
-        width:16px;
-        left:0px;
-        bottom:0px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-        }
-
-        input:checked + .slider {
-        background-color: #2196F3;
-        }
-
-        input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3
-        }
-
-        input:checked + .slider:before {
-        -webkit-transition: translateX(0px);
-        -ms-transform: translateX(0px);
-        transform: translateX(0px);
-        }
-
-        .slider.round {
-        border-radius:0px;
-        }
-
-        .slider.round:before {
-        border-radius:50%;
-        }
-
-        #description {
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        }
-
-        #infowindow-content .title {
-        font-weight: bold;
-        }
-
-        #infowindow-content {
-        display: none;
-        }
-
-        #map #infowindow-content {
-        display: inline;
-        }
-
-        .pac-card {
-        margin: 10px 10px 0 0;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        background-color: #fff;
-        font-family: Roboto;
-        }
-
-        #pac-container {
-        padding-bottom: 12px;
-        margin-right: 12px;
-        }
-
-        .pac-controls {
-        display: inline-block;
-        padding: 5px 11px;
-        }
-
-        .pac-controls label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-        }
-
-        #pac-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-        }
-
-        #pac-input:focus {
-        border-color: #4d90fe;
-        }
-
-        #title {
-        color: #fff;
-        background-color: #4d90fe;
-        font-size: 25px;
-        font-weight: 500;
-        padding: 6px 12px;
-        }
-
-        #target {
-        width: 345px;
-        }
-
-        .open-button {
-        background-color: gray;
-        color: white;
-        padding: 16px 10px;
-        border: none;
-        cursor: pointer;
-        opacity: 0.8;
-        position: fixed;
-        bottom: 200px;
-        right: 200px;
-        width: 250px;
-        }
-
-        .form-popup {
-        display: none;
-        position: absolute;
-        bottom: 0;
-        right: 15px;
-        border: 3px solid black;
-        z-index: 9;
-        }
-
-        .form-container {
-        max-width: 300px;
-        padding: 10px;
-        background-color: white;
-        }
-
-        .form-container input[type=text], .form-container input[type=password] {
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-        }
-
-        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-        }
-
-        .form-container .btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        margin-bottom:10px;
-        opacity: 0.8;
-        }
-
-        .form-container .cancel {
-        background-color: red;
-        }
-
-        .form-container .btn:hover, .open-button:hover {
-        opacity: 1;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="mystyle.css">
     <script>
       function initAutocomplete() {
         window.map = new google.maps.Map(document.getElementById("map"), {
@@ -373,7 +66,7 @@
                 (function(marker,infowindow) {
                     google.maps.event.addListener(marker,'click', function() {
                         infowindow.open(map, marker);
-                        infowindow.setContent("hi");
+                        infowindow.setContent('<div><strong>' + '_ minute wait' + '</strong><br>' + 'Time last updated: xx:xx' + '<br>' + '</div>');                        
                         map.setZoom(14);
                         map.setCenter(marker.getPosition());
                     });   
@@ -501,31 +194,66 @@
     function addWaitTime(coord) {   //coord = coordinates for long/lat
         console.log('Name:' + coord);
         var pos = coord.indexOf(",");
-        var latitude = coord.substring(1, 9);
-        var longitude = coord.substring(pos + 2, pos + 10);
+        window.latitude = coord.substring(1, 9);
+        window.longitude = coord.substring(pos + 2, pos + 10);
         console.log('lat:' + latitude + ' long:' + longitude);
         document.getElementById("myform").style.display = "block";
-
-       /* const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ placeId: placeId }, (results, status) => {
-        if (status === "OK") {
-        if (results[0]) {
-            map.setZoom(11);
-            map.setCenter(results[0].geometry.location);
-            const marker = new google.maps.Marker({
-            map,
-            position: results[0].geometry.location,
-            });
-            this.infowindow.setContent(results[0].formatted_address);
-            this.infowindow.open(map, marker);
-        } else {
-            window.alert("No results found");
-        }
-        } else {
-            window.alert("Geocoder failed due to: " + status);
-        }
-        }); */
     };
+
+    function addTime(){
+        var time = document.getElementById("waittime").value;
+        console.log(time);
+       // addNewMarker(latitude, longitude, time);   THIS FUNCTION CANNOT MAKE NEW MARKER BECAUSE THE PAGE REFRESHES AFTER SUBMIT
+    }
+
+    function addNewMarker(latitude, longitude, time) {
+        //URL locations for marker pins/colors
+        const iconBase = "http://maps.google.com/mapfiles/ms/icons/";
+        const icons = {
+            no_wait: {
+            name: "< 5 minutes",
+            icon: iconBase + "green-dot.png",
+            },
+            med_wait: {
+            name: "5-30 minutes",
+            icon: iconBase + "yellow-dot.png",
+            },
+            long_wait: {
+            name: "> 30 minutes",
+            icon: iconBase + "red-dot.png",
+            },
+        };
+        var wait_type = "";
+        if(time > 30) {
+            wait_type = "long_wait";
+        } else if (time < 5) {
+            wait_type = "no_wait";
+        } else {
+            wait_type = "med_wait";
+        }
+
+        
+        var f_position = new google.maps.LatLng(latitude, longitude);
+        var f_type = wait_type;
+    
+        const marker = new google.maps.Marker({
+            position: f_position,
+            icon: icons[f_type].icon,
+            map: map,
+            title: "click to zoom",
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        (function(marker,infowindow) {
+            google.maps.event.addListener(marker,'click', function() {
+                infowindow.open(map, marker);
+                infowindow.setContent("Click for more information on wait time");                        
+                map.setZoom(14);
+                map.setCenter(marker.getPosition());
+            });   
+        })(marker,infowindow); 
+    }
 
     function closeForm() {
         document.getElementById("myform").style.display = "none";
@@ -550,13 +278,13 @@
     <div id="legend"><h3>Wait Times</h3></div>
     
     <div class="form-popup" id="myform" align="center" style="margin-top:0px; display:none">
-    <form name="waitForm" method="post" action="dataconnection.php" class="form-container">
+    <form name="waitForm" id="waitForm" method="post" action="dataconnection.php" class="form-container">
         <p>
         <h3>Current Wait Time Information</h3>
         <label for="wait">Wait Time(min)</label>
-        <input type="number" name="waittime" id="watitime" min="0" max="500">
+        <input type="number" name="waittime" id="waittime" min="0" max="500">
         </p>
-        <button type="submit" class="btn">Submit</button>
+        <button type="submit" class="btn" onclick="addTime()">Submit</button>
         <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
     </form>
     </div>
